@@ -1,10 +1,16 @@
 ---
 # defaults file for rabbitmq
-rabbitmq-manage: true
-make-super-user: true
+rabbitmq_manage: true
+make_rabbitmq_user: true
 
 # RabbitMQ (erlang.cookie)
 rabbitmq_cookie: XPVTRGPZHAQYKQHKEBUF
+
+# RabbitMQ user premissions
+rabbitmq_configure_priv: .*
+rabbitmq_read_priv: .*
+rabbitmq_write_priv: .*
+rabbitmq_user_state: present
 
 # RabbitMQ (rabbitmq.config)
 rabbitmq_amqp_port: 5672

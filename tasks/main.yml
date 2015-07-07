@@ -22,13 +22,18 @@
   notify: restart rabbitmq-server
 
 - name: enable management plugin
-  command: rabbitmq-plugins enable rabbitmq_management
-  when: rabbitmq-manage
+  rabbitmq_plugin:
+     name: rabbitmq_management
+     state: enabled
+  when: rabbitmq_manage
 
 - name: Setup rabbitmq user with admin access
-  command: "rabbitmqctl {{ item }}"
-  with_items:
-    - rabbitmqctl add_user {{ rabbitmq_default_user }} {{ rabbitmq_default_pass }}
-    - rabbitmqctl set_user_tags {{ rabbitmq_default_user }} {{ rabbitmq_default_user_tags }}
-    - rabbitmqctl set_permissions -p {{ rabbitmq_default_vhost }} {{ rabbitmq_default_user }} ".*" ".*" ".*"
-  when: make-super-user
+  rabbitmq-user:
+    user: {{rabbitmq_default_user}}
+    password: {{rabbitmq_default_pass}}
+    vhost: {{rabbitmq_default_vhost}}
+    configure_priv: {{rabbitmq_configure_priv}}
+    read_priv: {{rabbitmq_read_priv}}
+    write_priv: {{rabbitmq_write_priv}}
+    state: {{rabbitmq_user_state}}
+  when: make_rabbitmq_user
