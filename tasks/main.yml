@@ -26,7 +26,7 @@
   when: rabbitmq-manage
 
 - name: Setup rabbitmq user with admin access
-  command: "rabbitmqctl {{ item.key }} {{ item }}"
+  command: "rabbitmqctl {{ item }}"
   with_items:
     - rabbitmqctl add_user {{ rabbitmq_default_user }} {{ rabbitmq_default_pass }}
     - rabbitmqctl set_user_tags {{ rabbitmq_default_user }} {{ rabbitmq_default_user_tags }}
