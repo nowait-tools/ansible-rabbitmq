@@ -14,6 +14,10 @@
     state: present
   when: ansible_os_family == 'Debian'
 
+- name: shutdown rabbitmq to change cookie and conf file
+  notify: stop rabbitmq-server
+  when: rabbitmq_cluster
+
 - name: ensure cookies are the same between all envs
   template: src=erlang.cookie.j2 dest=/var/lib/rabbitmq/.erlang.cookie
   when: rabbitmq_cluster
