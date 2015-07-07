@@ -1,0 +1,2 @@
+# rabbitmq
+rabbitmq ansible playbook
