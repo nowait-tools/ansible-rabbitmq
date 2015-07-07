@@ -1,0 +1,64 @@
+[
+ {rabbit,
+  [
+   {tcp_listeners, [{{ rabbitmq_amqp_port }}]},
+
+   %% SSL listeners are configured in the same fashion as TCP listeners,
+   %% including the option to control the choice of interface.
+   %%
+   %% {ssl_listeners, [5671]},
+
+   %% Maximum time for AMQP 0-8/0-9/0-9-1 handshake (after socket connection
+   %% and SSL handshake), in milliseconds.
+   %%
+   %% {handshake_timeout, 10000},
+
+    {log_levels, [{connection, info}]},
+    {loopback_users, [<<"{{ rabbitmq_loopback_user }}">>]},
+
+   %% Configuring SSL.
+   %% See http://www.rabbitmq.com/ssl.html for full documentation.
+   %%
+   %% {ssl_options, [{cacertfile,           "/path/to/testca/cacert.pem"},
+   %%                {certfile,             "/path/to/server/cert.pem"},
+   %%                {keyfile,              "/path/to/server/key.pem"},
+   %%                {verify,               verify_peer},
+   %%                {fail_if_no_peer_cert, false}]},
+    {default_vhost,       <<"{{ rabbitmq_default_vhost }}">>},
+    {default_user,        <<"{{ rabbitmq_default_user }}">>},
+    {default_pass,        <<"{{ rabbitmq_default_pass }}">>},
+    {default_permissions, [<<".*">>, <<".*">>, <<".*">>]},
+    {default_user_tags, [{{ rabbitmq_default_user_tags }}]},
+    {channel_max, 128},
+
+   %% Customising Socket Options.
+   %%
+   %% See (http://www.erlang.org/doc/man/inet.html#setopts-2) for
+   %% further documentation.
+   %%
+   %% {tcp_listen_options, [binary,
+   %%                       {packet,        raw},
+   %%                       {reuseaddr,     true},
+   %%                       {backlog,       128},
+   %%                       {nodelay,       true},
+   %%                       {exit_on_close, false}]},
+
+    {vm_memory_high_watermark, {{ rabbitmq_high_watermark }} },
+    {vm_memory_high_watermark_paging_ratio, {{ rabbitmq_high_watermark_paging }} },
+
+   %% Set disk free limit (in bytes). Once free disk space reaches this
+   %% lower bound, a disk alarm will be set - see the documentation
+   %% listed above for more details.
+   %%
+   %% {disk_free_limit, 50000000},
+
+      {disk_free_limit, {mem_relative, {{rabbitmq_disk_free_limit}} }}
+
+   %% Make clustering happen *automatically* at startup - only applied
+   %% to nodes that have just been reset or started for the first time.
+   %% See http://www.rabbitmq.com/clustering.html#auto-config for
+   %% further details.
+   %%
+   %% {cluster_nodes, {['rabbit@my.host.com'], disc}},
+  ]}
+].

@@ -1,0 +1,18 @@
+---
+# defaults file for rabbitmq
+rabbitmq-manage: true
+make-super-user: true
+
+# RabbitMQ (erlang.cookie)
+rabbitmq_cookie: XPVTRGPZHAQYKQHKEBUF
+
+# RabbitMQ (rabbitmq.config)
+rabbitmq_amqp_port: 5672
+rabbitmq_loopback_user: guest
+rabbitmq_default_vhost: /
+rabbitmq_default_user: ansible
+rabbitmq_default_pass: ansible
+rabbitmq_default_user_tags: administrator
+rabbitmq_disk_free_limit: 0.7
+rabbitmq_high_watermark: 0.4
+rabbitmq_high_watermark_paging: 0.5
