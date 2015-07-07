@@ -29,11 +29,11 @@
 
 - name: Setup rabbitmq user with admin access
   rabbitmq-user:
-    user: {{rabbitmq_default_user}}
-    password: {{rabbitmq_default_pass}}
-    vhost: {{rabbitmq_default_vhost}}
-    configure_priv: {{rabbitmq_configure_priv}}
-    read_priv: {{rabbitmq_read_priv}}
-    write_priv: {{rabbitmq_write_priv}}
-    state: {{rabbitmq_user_state}}
+    user: "{{rabbitmq_default_user}}"
+    password: "{{rabbitmq_default_pass}}"
+    vhost: "{{rabbitmq_default_vhost}}"
+    configure_priv: "{{rabbitmq_configure_priv}}"
+    read_priv: "{{rabbitmq_read_priv}}"
+    write_priv: "{{rabbitmq_write_priv}}"
+    state: "{{rabbitmq_user_state}}"
   when: make_rabbitmq_user
