@@ -1,4 +1,4 @@
---
+---
 # defaults file for rabbitmq
 rabbitmq_manage: true
 rabbitmq_cluster: false
