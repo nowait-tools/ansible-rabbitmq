@@ -1,7 +1,7 @@
-Role Name
+RabbitMQ
 =========
 
-A brief description of the role goes here.
+RabbitMQ playbook that enables you to spin up a simple server or cluster them together.
 
 Requirements
 ------------
@@ -11,21 +11,43 @@ Any pre-requisites that may not be covered by Ansible itself or the role should 
 Role Variables
 --------------
 
-A description of the settable variables for this role should go here, including any variables that are in defaults/main.yml, vars/main.yml, and any variables that can/should be set via parameters to the role. Any variables that are read from other roles and/or the global scope (ie. hostvars, group vars, etc.) should be mentioned here as well.
-
-Dependencies
-------------
-
-A list of other roles hosted on Galaxy should go here, plus any details in regards to parameters that may need to be set for other roles, or variables that are used from other roles.
+    # enables the management plugin for rabbitmq
+    rabbitmq_manage: true
+    # enables clustering and ensures the same cookie is used
+    rabbitmq_cluster: false
+    # create a rabbitmq user
+    make_rabbitmq_user: true
+    # .erlang.cookie file value don't use this value
+    rabbitmq_cookie: XPVTRGPZHAQYKQHKEBUF
+    # RabbitMQ user premissions
+    rabbitmq_configure_priv: .*
+    rabbitmq_read_priv: .*
+    rabbitmq_write_priv: .*
+    rabbitmq_user_state: present
+    # RabbitMQ (rabbitmq.config)
+    rabbitmq_amqp_port: 5672
+    rabbitmq_loopback_user: guest
+    rabbitmq_default_vhost: /
+    rabbitmq_default_user: ansible
+    rabbitmq_default_pass: ansible
+    rabbitmq_default_user_tags: administrator
+    rabbitmq_disk_free_limit: 0.7
+    rabbitmq_high_watermark: 0.4
+    rabbitmq_high_watermark_paging: 0.5
 
 Example Playbook
 ----------------
 
-Including an example of how to use your role (for instance, with variables passed in as parameters) is always nice for users too:
+Simple playbook that is enabled for use of clustering. Never use the default key in production:
 
-    - hosts: servers
+    ---
+    - hosts: localhost
+      connection: local
+      sudo: yes
+      vars:
+        rabbitmq_cluster: true
       roles:
-         - { role: username.rolename, x: 42 }
+        - rabbitmq
 
 License
 -------
@@ -35,4 +57,4 @@ BSD
 Author Information
 ------------------
 
-An optional section for the role authors to include contact information, or a website (HTML is not allowed).
+Produced by NoWait

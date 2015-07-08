@@ -1,7 +1,7 @@
----
+--
 # defaults file for rabbitmq
 rabbitmq_manage: true
-rabbitmq_cluser: false
+rabbitmq_cluster: false
 make_rabbitmq_user: true
 
 # RabbitMQ (erlang.cookie)
