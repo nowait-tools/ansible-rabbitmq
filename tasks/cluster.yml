@@ -1,0 +1,13 @@
+---
+- name: ensure cookies are the same between all envs
+  template: src=erlang.cookie.j2 dest=/var/lib/rabbitmq/.erlang.cookie
+
+- name: install python pip
+  apt:
+    name: python-pip
+    state: present
+  when: ansible_os_family == 'Debian'
+
+- name: install boto
+  pip:
+    name: boto

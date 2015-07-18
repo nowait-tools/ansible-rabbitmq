@@ -19,8 +19,8 @@
     name: rabbitmq-server
     state: stopped
 
-- name: ensure cookies are the same between all envs
-  template: src=erlang.cookie.j2 dest=/var/lib/rabbitmq/.erlang.cookie
+- name: cluster rabbitmq servers
+  include: cluster.yml
   when: rabbitmq_cluster
 
 - name: configure rabbitmq-server
@@ -39,11 +39,12 @@
 
 - name: Setup rabbitmq user with admin access
   rabbitmq_user:
-    user: "{{rabbitmq_default_user}}"
-    password: "{{rabbitmq_default_pass}}"
-    vhost: "{{rabbitmq_default_vhost}}"
-    configure_priv: "{{rabbitmq_configure_priv}}"
-    read_priv: "{{rabbitmq_read_priv}}"
-    write_priv: "{{rabbitmq_write_priv}}"
-    state: "{{rabbitmq_user_state}}"
+    user: "{{ rabbitmq_default_user }}"
+    password: "{{ rabbitmq_default_pass }}"
+    vhost: "{{ rabbitmq_default_vhost }}"
+    configure_priv: "{{ rabbitmq_configure_priv }}"
+    read_priv: "{{ rabbitmq_read_priv }}"
+    write_priv: "{{ rabbitmq_write_priv }}"
+    tags: "{{ rabbitmq_default_user_tags }}"
+    state: "{{ rabbitmq_user_state }}"
   when: make_rabbitmq_user
