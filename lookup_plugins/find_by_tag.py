@@ -1,9 +1,8 @@
-## Usage: lookup('find_by_tag')
+# lookup('find_by_tag', 'key=Name value=rabbitmq')
 import boto
-import boto.vpc
 import boto.ec2
+import yaml
 
-from sets import Set
 from ansible import utils
 
 class LookupModule(object):
@@ -12,35 +11,50 @@ class LookupModule(object):
         self.basedir = basedir
 
     def run(self, terms, inject=None, **kwargs):
-
         terms = utils.listify_lookup_plugin_terms(terms, self.basedir, inject)
 
         if isinstance(terms, basestring):
            terms = [ terms ]
 
-        ret = []
+        meta_params = dict(key=None, value=None)
+
+        for term in terms:
+            params = term.split()
+            try:
+                for param in params:
+                    key, value = param.split('=')
+                    assert(key in meta_params)
+                    if key == 'key':
+                        meta_params['key'] = 'tag:' + value
+                    if key == 'value':
+                        meta_params['value'] = value
+            except (ValueError, AssertionError) as e:
+                utils.warnings(e)
 
         try:
-            regions = ec2.regions()
-            print regions
-            exit()
+            regions = boto.ec2.regions()
         except Exception, e:
             utils.warnings('Boto authentication issue: %s' % e)
 
-        for term in terms:
-            eligible_subnets = vpc.get_all_subnets(filters={"tag:tier": term})
+        server_info = []
 
-        return Set(ret)
+        for region in regions:
+            conn = self.connect(region)
+            try:
+                reservations = conn.get_all_instances(filters={meta_params['key'] : meta_params['value']})
+                for instance in [i for r in reservations for i in r.instances]:
+                    server_info.append('ip-' + instance.private_ip_address.replace('.', '-'))
+            except:
+                utils.warning('error connecting to: ' + region.name)
+
+        return server_info
 
     # Connect to ec2 region
     def connect(self, region):
-        ''' create connection to api server'''
-        if self.eucalyptus:
-            conn = boto.connect_euca(host=self.eucalyptus_host)
-            conn.APIVersion = '2010-08-31'
-        else:
-            conn = ec2.connect_to_region(region)
-        # connect_to_region will fail "silently" by returning None if the region name is wrong or not supported
-        if conn is None:
-            self.fail_with_error("region name: %s likely not supported, or AWS is down.  connection to region failed." % region)
+        try:
+            conn = boto.ec2.connect_to_region(region.name)
+        except Exception, e:
+            utils.warning('error connecting to region: ' + region.name)
+        # connect_to_region will fail "silently" by returning
+        # None if the region name is wrong or not supported
         return conn

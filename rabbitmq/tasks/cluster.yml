@@ -4,10 +4,6 @@
     src: erlang.cookie.j2
     dest: /var/lib/rabbitmq/.erlang.cookie
 
-- name: get info about servers in cluster
+- name: get server hostnames in cluster
   set_fact:
-    nodes: "{{ lookup('ec2_tags') }}"
-
-- name: debug info
-  debug:
-    var: nodes
+    nodes: "{{ lookup('find_by_tag', 'key=Name value=rabbitmq').split(',') }}"

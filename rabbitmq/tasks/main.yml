@@ -1,8 +1,4 @@
 ---
-- name: get info about servers in cluster
-  set_fact:
-    nodes: "{{ lookup('find_by_tag', '') }}"
-
 # tasks file for rabbitmq
 - name: add rabbitmq key (Debian)
   apt_key: url=http://www.rabbitmq.com/rabbitmq-signing-key-public.asc state=present
