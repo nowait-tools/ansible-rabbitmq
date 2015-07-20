@@ -1,7 +1,7 @@
 RabbitMQ
 =========
 
-RabbitMQ playbook that enables you to spin up a simple server or cluster them together.
+RabbitMQ playbook that enables you to spin up a simple server or cluster them together. If you are integrating this into another repo make sure that rabbitmq goes in the roles folder and that you have a top level folder called lookup_plugins with find_by_tag.py in it or this play will not be able to auto cluster. Currently only EC2 is supported but feel free to request support for other services you may want to use this with.
 
 Requirements
 ------------
@@ -86,7 +86,7 @@ You must first create a Launch Configuration (LC) that contains a user data file
 
 You must also ensure that your servers are in the same security group and have the proper ports open to each other as well as being in the same VPC. The ports that need to be open can be found in the rabbitmq documentation. You will likely only need 4369, 25672, 15672, and 5672. If you are having issues open up all ports to everything for testing to ensure the security group is not the issue.
 
-Add the LC you have made to an Auto Scale Group (ASG) and set the number of servers to spin up. 
+Add the LC you have made to an Auto Scale Group (ASG) and set the number of servers to spin up.
 
 License
 -------
