@@ -7,3 +7,28 @@
 - name: get server hostnames in cluster
   set_fact:
     nodes: "{{ lookup('find_by_tag', 'key=Name value=rabbitmq').split(',') }}"
+
+- name: start rabbitmq-server (clustering)
+  service:
+    name: rabbitmq-server
+    state: started
+
+- name: turn of rabbitmq but not the erlang process
+  command: "{{ item }}"
+  with_items:
+    - rabbitmqctl stop_app
+    - rabbitmqctl reset
+
+- name: cluster all known nodes
+  command: "rabbitmqctl join_cluster rabbit@{{item}}"
+  with_items: nodes
+  when: nodes is defined
+  ignore_errors: yes
+
+- name: turn back on rabbitmq
+  command: rabbitmqctl start_app
+
+- name: stop rabbitmq-server (clustering)
+  service:
+    name: rabbitmq-server
+    state: stopped

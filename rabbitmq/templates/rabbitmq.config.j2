@@ -53,12 +53,5 @@
    %% {disk_free_limit, 50000000},
 
       {disk_free_limit, {mem_relative, {{rabbitmq_disk_free_limit}} }}
-
-   %% Make clustering happen *automatically* at startup - only applied
-   %% to nodes that have just been reset or started for the first time.
-   %% See http://www.rabbitmq.com/clustering.html#auto-config for
-   %% further details.
-   %%
-   %% {cluster_nodes, {['rabbit@my.host.com'], disc}},
   ]}
 ].
