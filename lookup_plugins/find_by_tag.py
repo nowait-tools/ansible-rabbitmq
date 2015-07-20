@@ -42,9 +42,10 @@ class LookupModule(object):
             try:
                 reservations = conn.get_all_instances(filters={meta_params['key'] : meta_params['value']})
                 for instance in [i for r in reservations for i in r.instances]:
-                    server_info.append('ip-' + instance.private_ip_address.replace('.', '-'))
+                    if instance.private_ip_address != None:
+                        server_info.append('ip-' + instance.private_ip_address.replace('.', '-'))
             except:
-                utils.warning('error connecting to: ' + region.name)
+                utils.warning('error getting instances from: ' + region.name)
 
         return server_info
 
