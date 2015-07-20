@@ -1,7 +1,6 @@
 # lookup('find_by_tag', 'key=Name value=rabbitmq')
 import boto
 import boto.ec2
-import yaml
 
 from ansible import utils
 
@@ -55,6 +54,7 @@ class LookupModule(object):
             conn = boto.ec2.connect_to_region(region.name)
         except Exception, e:
             utils.warning('error connecting to region: ' + region.name)
+            conn = None
         # connect_to_region will fail "silently" by returning
         # None if the region name is wrong or not supported
         return conn
