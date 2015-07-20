@@ -23,3 +23,11 @@ rabbitmq_default_user_tags: administrator
 rabbitmq_disk_free_limit: 0.7
 rabbitmq_high_watermark: 0.4
 rabbitmq_high_watermark_paging: 0.5
+
+# Used for tagging instance and when
+# looking up servers in ec2.py
+tag_key: Name
+tag_value: rabbitmq
+
+# User ansible is running as home dir
+user_home_folder: /root

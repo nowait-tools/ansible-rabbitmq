@@ -1,0 +1,13 @@
+---
+- name: ensure cookies are the same between all envs
+  template:
+    src: erlang.cookie.j2
+    dest: /var/lib/rabbitmq/.erlang.cookie
+
+- name: get info about servers in cluster
+  set_fact:
+    nodes: "{{ lookup('ec2_tags') }}"
+
+- name: debug info
+  debug:
+    var: nodes
