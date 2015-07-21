@@ -5,8 +5,13 @@
     dest: /var/lib/rabbitmq/.erlang.cookie
 
 - name: get server hostnames in cluster
-  set_fact:
-    nodes: "{{ lookup('find_by_tag', 'key=Name value=rabbitmq').split(',') }}"
+  ec2_search:
+    key: Name
+    value: rabbitmq
+  register: nodes
+
+- debug:
+    msg: "{{nodes}}"
 
 - name: start rabbitmq-server (clustering)
   service:

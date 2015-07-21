@@ -1,9 +1,0 @@
----
-- name: install rabbitmq
-  hosts: all
-  gather_facts: yes
-  sudo: yes
-  vars:
-    rabbitmq_cluster: true
-  roles:
-    - rabbitmq 
