@@ -19,7 +19,7 @@ Role Variables
     make_rabbitmq_user: true
     # .erlang.cookie file value don't use this value
     rabbitmq_cookie: XPVTRGPZHAQYKQHKEBUF
-    # RabbitMQ user premissions
+    # RabbitMQ user permissions
     rabbitmq_configure_priv: .*
     rabbitmq_read_priv: .*
     rabbitmq_write_priv: .*
