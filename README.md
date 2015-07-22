@@ -36,8 +36,10 @@ Role Variables
     rabbitmq_high_watermark_paging: 0.5
     # AWS Key config
     # Must set in your vars if you want to auto cluster
-    aws_access_key_id: not-a-real-key
-    aws_secret_access_key: not-a-real-key
+    app_settings:
+      rabbitmq:
+        aws_access_key_id: not-a-real-key
+        aws_secret_access_key: not-a-real-key
 
 Example Playbook
 ----------------

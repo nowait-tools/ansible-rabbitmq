@@ -33,5 +33,7 @@ tag_value: rabbitmq
 user_home_folder: /root
 
 # AWS Key config
-aws_access_key_id: not-a-real-key
-aws_secret_access_key: not-a-real-key
+app_settings:
+  rabbitmq:
+    aws_access_key_id: not-a-real-key
+    aws_secret_access_key: not-a-real-key
