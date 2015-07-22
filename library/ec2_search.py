@@ -54,6 +54,29 @@ try:
 except ImportError:
     HAS_BOTO = False
 
+def todict(obj, classkey=None):
+    if isinstance(obj, dict):
+        data = {}
+        for (k, v) in obj.items():
+            data[k] = todict(v, classkey)
+        return data
+    elif hasattr(obj, "_ast"):
+        return todict(obj._ast())
+    elif hasattr(obj, "__iter__"):
+        return [todict(v, classkey) for v in obj]
+    elif hasattr(obj, "__dict__"):
+        # This Class causes a recursive loop and at this time is not worth
+        # debugging. If it's useful later I'll look into it.
+        if not isinstance(obj, boto.ec2.blockdevicemapping.BlockDeviceType):
+            data = dict([(key, todict(value, classkey))
+                for key, value in obj.__dict__.iteritems()
+                if not callable(value) and not key.startswith('_')])
+            if classkey is not None and hasattr(obj, "__class__"):
+                data[classkey] = obj.__class__.__name__
+            return data
+    else:
+        return obj
+
 def get_all_ec2_regions(module):
     try:
         regions = boto.ec2.regions()
@@ -86,7 +109,7 @@ def main():
     if not HAS_BOTO:
         module.fail_json(msg='boto required for this module')
 
-    server_info = []
+    server_info = list()
 
     for region in get_all_ec2_regions(module):
         conn = connect_to_region(region, module)
@@ -98,12 +121,13 @@ def main():
                 reservations = conn.get_all_instances(filters={ec2_key : ec2_value})
                 for instance in [i for r in reservations for i in r.instances]:
                     if instance.private_ip_address != None:
-                        server_info.append('ip-' + instance.private_ip_address.replace('.', '-'))
+                        instance.hostname = 'ip-' + instance.private_ip_address.replace('.', '-')
+                    server_info.append(todict(instance))
         except:
             print module.jsonify('error getting instances from: ' + region.name)
 
-    ansible_facts = {'ec2_search': server_info}
-    ec2_facts_result = dict(changed=True, ansible_facts=ansible_facts)
+    ansible_facts = {'info': server_info}
+    ec2_facts_result = dict(changed=True, ec2=ansible_facts)
 
     module.exit_json(**ec2_facts_result)
 

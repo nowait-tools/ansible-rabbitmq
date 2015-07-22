@@ -10,23 +10,20 @@
     value: rabbitmq
   register: nodes
 
-- debug:
-    msg: "{{nodes}}"
-
 - name: start rabbitmq-server (clustering)
   service:
     name: rabbitmq-server
     state: started
 
-- name: turn of rabbitmq but not the erlang process
+- name: turn off rabbitmq but not the erlang process
   command: "{{ item }}"
   with_items:
     - rabbitmqctl stop_app
     - rabbitmqctl reset
 
 - name: cluster all known nodes
-  command: "rabbitmqctl join_cluster rabbit@{{item}}"
-  with_items: nodes
+  command: "rabbitmqctl join_cluster rabbit@{{item['hostname']}}"
+  with_items: nodes['ec2']['info']
   when: nodes is defined
   ignore_errors: yes
 
