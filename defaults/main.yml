@@ -31,3 +31,7 @@ tag_value: rabbitmq
 
 # User ansible is running as home dir
 user_home_folder: /root
+
+# AWS Key config
+aws_access_key_id: not-a-real-key
+aws_secret_access_key: not-a-real-key

@@ -34,6 +34,10 @@ Role Variables
     rabbitmq_disk_free_limit: 0.7
     rabbitmq_high_watermark: 0.4
     rabbitmq_high_watermark_paging: 0.5
+    # AWS Key config
+    # Must set in your vars if you want to auto cluster
+    aws_access_key_id: not-a-real-key
+    aws_secret_access_key: not-a-real-key
 
 Example Playbook
 ----------------
@@ -61,12 +65,8 @@ You must first create a Launch Configuration (LC) that contains a user data file
 
     echo "BEGIN USER-DATA"
 
-    export AWS_ACCESS_KEY_ID='XXX'
-    export AWS_SECRET_ACCESS_KEY='XXX'
-
     # install needed packages for ansible
     apt-get -y update
-    apt-get install -y -q python-paramiko python-yaml python-jinja2 python-simplejson python-setuptools
     apt-get install -y -q git-core python-pip
 
     pip install boto ansible
