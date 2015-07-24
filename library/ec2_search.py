@@ -102,6 +102,7 @@ def main():
             key = dict(default='Name'),
             value = dict(),
             lookup = dict(default='tags'),
+            ignore_state = dict(default='terminated'),
             region = dict(),
         )
     )
@@ -122,7 +123,8 @@ def main():
                 for instance in [i for r in reservations for i in r.instances]:
                     if instance.private_ip_address != None:
                         instance.hostname = 'ip-' + instance.private_ip_address.replace('.', '-')
-                    server_info.append(todict(instance))
+                    if instance._state.name not in module.params.get('ignore_state') and :
+                        server_info.append(todict(instance))
         except:
             print module.jsonify('error getting instances from: ' + region.name)
 
