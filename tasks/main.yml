@@ -1,5 +1,9 @@
 ---
 # tasks file for rabbitmq
+- name: change hostname to something more sane
+  hostname:
+    name: "{{ ansible_hostname }}.ec2.internal"
+    
 - name: add rabbitmq key (Debian)
   apt_key: url=http://www.rabbitmq.com/rabbitmq-signing-key-public.asc state=present
   when: ansible_os_family == 'Debian'
