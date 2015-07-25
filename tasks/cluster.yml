@@ -30,7 +30,7 @@
     - rabbitmqctl reset
 
 - name: cluster all known nodes
-  command: "rabbitmqctl join_cluster rabbit@{{item['hostname']}}.ec2.internal"
+  command: "rabbitmqctl join_cluster rabbit@{{ item['hostname'] }}{{ rabbitmq_nodename_suffix }}"
   with_items: "{{ nodes['info']|default([]) }}"
   when: nodes
   ignore_errors: yes
