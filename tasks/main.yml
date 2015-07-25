@@ -8,7 +8,7 @@
 
 - name: add rabbitmq repo (Debian)
   apt_repository:
-    repo: deb http://www.rabbitmq.com/debian/ stable main
+    repo: deb http://www.rabbitmq.com/debian/ testing main
     state: present
     update_cache: yes
   when: ansible_os_family == 'Debian'
