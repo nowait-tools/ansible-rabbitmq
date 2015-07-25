@@ -31,8 +31,8 @@
 
 - name: cluster all known nodes
   command: "rabbitmqctl join_cluster rabbit@{{item['hostname']}}.ec2.internal"
-  with_items: nodes['ec2']['info']
-  when: nodes is defined
+  with_items: "{{ nodes['info']|default([]) }}"
+  when: nodes
   ignore_errors: yes
 
 - name: turn back on rabbitmq
