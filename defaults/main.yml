@@ -4,8 +4,12 @@ rabbitmq_manage: true
 rabbitmq_cluster: false
 make_rabbitmq_user: true
 
+# Cluster information
 # RabbitMQ (erlang.cookie)
 rabbitmq_cookie: XPVTRGPZHAQYKQHKEBUF
+rabbitmq_nodename: "{{ ansible_hostname }}.ec2.internal"
+rabbitmq_ec2_tag_key: Name
+rabbitmq_ec2_tag_value: rabbitmq
 
 # RabbitMQ user premissions
 rabbitmq_configure_priv: .*
@@ -23,11 +27,6 @@ rabbitmq_default_user_tags: administrator
 rabbitmq_disk_free_limit: 0.7
 rabbitmq_high_watermark: 0.4
 rabbitmq_high_watermark_paging: 0.5
-
-# Used for tagging instance and when
-# looking up servers in ec2.py
-tag_key: Name
-tag_value: rabbitmq
 
 # User ansible is running as home dir
 user_home_folder: /root

@@ -11,19 +11,25 @@ Any pre-requisites that may not be covered by Ansible itself or the role should 
 Role Variables
 --------------
 
-    # enables the management plugin for rabbitmq
+    ---
+    # defaults file for rabbitmq
     rabbitmq_manage: true
-    # enables clustering and ensures the same cookie is used
     rabbitmq_cluster: false
-    # create a rabbitmq user
     make_rabbitmq_user: true
-    # .erlang.cookie file value don't use this value
+
+    # Cluster information
+    # RabbitMQ (erlang.cookie)
     rabbitmq_cookie: XPVTRGPZHAQYKQHKEBUF
-    # RabbitMQ user permissions
+    rabbitmq_nodename: "{{ ansible_hostname }}.ec2.internal"
+    rabbitmq_ec2_tag_key: Name
+    rabbitmq_ec2_tag_value: rabbitmq
+
+    # RabbitMQ user premissions
     rabbitmq_configure_priv: .*
     rabbitmq_read_priv: .*
     rabbitmq_write_priv: .*
     rabbitmq_user_state: present
+
     # RabbitMQ (rabbitmq.config)
     rabbitmq_amqp_port: 5672
     rabbitmq_loopback_user: guest
@@ -34,17 +40,21 @@ Role Variables
     rabbitmq_disk_free_limit: 0.7
     rabbitmq_high_watermark: 0.4
     rabbitmq_high_watermark_paging: 0.5
+
+    # User ansible is running as home dir
+    user_home_folder: /root
+
     # AWS Key config
-    # Must set in your vars if you want to auto cluster
     app_settings:
       rabbitmq:
         aws_access_key_id: not-a-real-key
         aws_secret_access_key: not-a-real-key
 
+
 Example Playbook
 ----------------
 
-Simple playbook that is enabled for use of clustering. Never use the default key in production:
+Simple playbook that is enabled for use of clustering. If you are using rabbitmq_clustering you must gather facts. Never use the default key in production:
 
     ---
     - hosts: localhost
