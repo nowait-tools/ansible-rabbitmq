@@ -1,7 +1,8 @@
 ---
 # tasks file for rabbitmq
 - name: change hostname (clustering)
-  hostname: "{{ rabbitmq_hostname }}"
+  hostname:
+    name: "{{ rabbitmq_hostname }}"
   when: rabbitmq_cluster
 
 - name: set rabbit conf file (clustering)
