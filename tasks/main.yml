@@ -1,5 +1,10 @@
 ---
 # tasks file for rabbitmq
+- name: change hostname (clustering)
+  hostname:
+    name: "{{ rabbitmq_hostname }}"
+  when: rabbitmq_cluster
+
 - name: add rabbitmq key (Debian)
   apt_key:
     url: http://www.rabbitmq.com/rabbitmq-signing-key-public.asc
@@ -24,7 +29,7 @@
     name: rabbitmq-server
     state: stopped
 
-- name: cluster rabbitmq servers
+- name: cluster rabbitmq servers (clustering)
   include: cluster.yml
   when: rabbitmq_cluster
 

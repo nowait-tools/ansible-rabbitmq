@@ -20,9 +20,13 @@ Role Variables
     # Cluster information
     # RabbitMQ (erlang.cookie)
     rabbitmq_cookie: XPVTRGPZHAQYKQHKEBUF
-    rabbitmq_nodename: "{{ ansible_hostname }}.ec2.internal"
+    rabbitmq_nodename: "rabbit"
+    rabbitmq_hostname: "{{ ansible_hostname }}.ec2.internal"
+    rabbitmq_nodename_suffix: .ec2.internal
     rabbitmq_ec2_tag_key: Name
     rabbitmq_ec2_tag_value: rabbitmq
+    # Must be set to true for clustering to work
+    rabbitmq_use_longname: "false"
 
     # RabbitMQ user premissions
     rabbitmq_configure_priv: .*
@@ -51,6 +55,7 @@ Role Variables
         aws_secret_access_key: not-a-real-key
 
 
+
 Example Playbook
 ----------------
 
@@ -62,6 +67,7 @@ Simple playbook that is enabled for use of clustering. If you are using rabbitmq
       sudo: yes
       vars:
         rabbitmq_cluster: true
+        rabbitmq_use_longname: "true"
       roles:
         - rabbitmq
 

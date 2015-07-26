@@ -1,15 +1,15 @@
 ---
-- name: ensure cookies are the same between all envs
-  template:
-    src: erlang.cookie.j2
-    dest: /var/lib/rabbitmq/.erlang.cookie
-
-- name: change hostname
+- name: set rabbit conf file (clustering)
   template:
     src: rabbitmq-env.conf.j2
     dest: /etc/rabbitmq/rabbitmq-env.conf
 
-- name: get server hostnames in cluster
+- name: ensure cookies are the same between all envs (clustering)
+  template:
+    src: erlang.cookie.j2
+    dest: /var/lib/rabbitmq/.erlang.cookie
+
+- name: get server hostnames (clustering)
   ec2_search:
     key: "{{ rabbitmq_ec2_tag_key }}"
     value: "{{ rabbitmq_ec2_tag_value }}"
@@ -23,13 +23,13 @@
     name: rabbitmq-server
     state: started
 
-- name: turn off rabbitmq but not the erlang process
+- name: turn off rabbitmq but not the erlang process (clustering)
   command: "{{ item }}"
   with_items:
     - rabbitmqctl stop_app
     - rabbitmqctl reset
 
-- name: cluster all known nodes
+- name: cluster all known nodes (clustering)
   command: "rabbitmqctl join_cluster rabbit@{{ item['hostname'] }}{{ rabbitmq_nodename_suffix }}"
   with_items: "{{ nodes['info']|default([]) }}"
   when: nodes
