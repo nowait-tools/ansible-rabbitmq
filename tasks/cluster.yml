@@ -1,5 +1,10 @@
 ---
-- name: ensure cookies are the same between all envs
+- name: set rabbit conf file (clustering)
+  template:
+    src: rabbitmq-env.conf.j2
+    dest: /etc/rabbitmq/rabbitmq-env.conf
+
+- name: ensure cookies are the same between all envs (clustering)
   template:
     src: erlang.cookie.j2
     dest: /var/lib/rabbitmq/.erlang.cookie

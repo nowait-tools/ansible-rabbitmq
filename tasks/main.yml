@@ -5,12 +5,6 @@
     name: "{{ rabbitmq_hostname }}"
   when: rabbitmq_cluster
 
-- name: set rabbit conf file (clustering)
-  template:
-    src: rabbitmq-env.conf.j2
-    dest: /etc/rabbitmq/rabbitmq-env.conf
-  when: rabbitmq_cluster
-
 - name: add rabbitmq key (Debian)
   apt_key:
     url: http://www.rabbitmq.com/rabbitmq-signing-key-public.asc
