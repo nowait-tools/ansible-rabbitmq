@@ -80,27 +80,29 @@ You must first create a Launch Configuration (LC) that contains a user data file
 
     #!/bin/bash -ex
     exec > >(tee /var/log/user-data.log|logger -t user-data -s 2>/dev/console) 2>&1
-
+    
     echo "BEGIN USER-DATA"
-
+    
     # install needed packages for ansible
-    apt-get -y update
+    apt-get update -y -q
+    apt-get install -y -q python-paramiko python-yaml python-jinja2 python-simplejson python-setuptools
     apt-get install -y -q git-core python-pip
-
+    
     pip install boto ansible
-
+    
     # setup hosts
-    echo "[local]" > ~/ansible_hosts
+    echo "[rabbitmq]" > ~/ansible_hosts
     echo "localhost" >> ~/ansible_hosts
-    export ANSIBLE_HOSTS=~/ansible_hosts
     export HOME=/root
-
-    mkdir /tmp/ansible
-    ansible-pull -U https://github.com/nowait-tools/rabbitmq.git -d /tmp/ansible --purge playbook.yml --accept-host-key
-
+    
+    git clone git@github.com:your_playbook/ansible.git
+    pushd ansible
+    ansible-galaxy install --role-file=requirements.galaxy --force
+    ansible-playbook playbook.yml  -t rabbitmq --connection=local
+    popd
+    rm -r ~/ansible ~/ansible_hosts
+    
     echo "END USER-DATA"
-
-    exit 0
 
 You must also ensure that your servers are in the same security group and have the proper ports open to each other as well as being in the same VPC. The ports that need to be open can be found in the rabbitmq documentation. You will likely only need 4369, 25672, 15672, and 5672. If you are having issues open up all ports to everything for testing to ensure the security group is not the issue.
 
