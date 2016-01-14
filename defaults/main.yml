@@ -12,6 +12,8 @@ rabbitmq_hostname: "{{ ansible_hostname }}.ec2.internal"
 rabbitmq_nodename_suffix: .ec2.internal
 rabbitmq_ec2_tag_key: Name
 rabbitmq_ec2_tag_value: rabbitmq
+# Either 'all' or specific region, e.g. 'eu-central-1'
+rabbitmq_ec2_region: all
 # Must be set to true for clustering to work
 rabbitmq_use_longname: "false"
 

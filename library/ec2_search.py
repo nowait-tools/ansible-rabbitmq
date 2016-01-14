@@ -6,7 +6,7 @@ DOCUMENTATION = '''
 module: ec2_search
 short_description: ask EC2 for information about other instances.
 description:
-    - Only supports seatch for hostname by tags currently. Looking to add more later.
+    - Only supports search for hostname by tags currently. Looking to add more later.
 version_added: "1.9"
 options:
   key:
@@ -94,9 +94,9 @@ def get_all_ec2_regions(module):
 # Connect to ec2 region
 def connect_to_region(region, module):
     try:
-        conn = boto.ec2.connect_to_region(region.name)
+        conn = boto.ec2.connect_to_region(region)
     except Exception, e:
-        print module.jsonify('error connecting to region: ' + region.name)
+        print module.jsonify('error connecting to region: ' + region)
         conn = None
     # connect_to_region will fail "silently" by returning
     # None if the region name is wrong or not supported
@@ -109,7 +109,7 @@ def main():
             value = dict(),
             lookup = dict(default='tags'),
             ignore_state = dict(default='terminated'),
-            region = dict(),
+            region = dict(default='all'),
         )
     )
 
@@ -118,7 +118,16 @@ def main():
 
     server_info = list()
 
-    for region in get_all_ec2_regions(module):
+    all_regions = [r.name for r in get_all_ec2_regions(module)]
+    passed_region = module.params.get('region')
+
+    # Check if passed region is correct
+    if passed_region != 'all' and passed_region in all_regions:
+        regions = list(passed_region)
+    else:
+        regions = all_regions
+
+    for region in regions:
         conn = connect_to_region(region, module)
         try:
             # Run when looking up by tag names, only returning hostname currently
@@ -132,7 +141,7 @@ def main():
                     if instance._state.name not in module.params.get('ignore_state'):
                         server_info.append(todict(instance))
         except:
-            print module.jsonify('error getting instances from: ' + region.name)
+            print module.jsonify('error getting instances from: ' + region)
 
     ec2_facts_result = dict(changed=True, info=server_info)
 
