@@ -4,6 +4,10 @@ rabbitmq_manage: true
 rabbitmq_cluster: false
 make_rabbitmq_user: true
 
+# Package versions
+erlang_version: "1:18.1"
+rabbitmq_version: "3.6.0-1"
+
 # Cluster information
 # RabbitMQ (erlang.cookie)
 rabbitmq_cookie: XPVTRGPZHAQYKQHKEBUF

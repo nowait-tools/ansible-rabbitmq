@@ -5,6 +5,26 @@
     name: "{{ rabbitmq_hostname }}"
   when: rabbitmq_cluster
 
+- name: add erlang key (Ubuntu/Debian)
+  apt_key:
+    url: http://packages.erlang-solutions.com/ubuntu/erlang_solutions.asc
+    state: present
+  when: ansible_os_family == 'Debian'
+
+- name: add erlang repo (Ubuntu)
+  apt_repository:
+    repo: "deb http://packages.erlang-solutions.com/ubuntu {{ ansible_distribution_release }} contrib"
+    state: present
+    update_cache: yes
+  when: ansible_distribution == 'Ubuntu'
+
+- name: add erlang repo (Debian)
+  apt_repository:
+    repo: deb http://packages.erlang-solutions.com/debian wheezy contrib
+    state: present
+    update_cache: yes
+  when: ansible_distribution == 'Debian'
+
 - name: add rabbitmq key (Debian)
   apt_key:
     url: http://www.rabbitmq.com/rabbitmq-signing-key-public.asc
@@ -20,9 +40,12 @@
 
 - name: install packages
   apt:
-    name: rabbitmq-server
+    name: "{{ item }}"
     state: present
   when: ansible_os_family == 'Debian'
+  with_items:
+    - esl-erlang={{ erlang_version }}
+    - rabbitmq-server={{ rabbitmq_version }}
 
 - name: shutdown rabbitmq to change cookie and conf file
   service:
