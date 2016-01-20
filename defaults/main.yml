@@ -5,6 +5,8 @@ rabbitmq_cluster: false
 make_rabbitmq_user: true
 
 # Package versions
+# !!! 'use_erlang_solutions_repo' should be set to true in order to specify erlang version !!!
+use_erlang_solutions_repo: false
 erlang_version: "1:18.1"
 rabbitmq_version: "3.6.0-1"
 
