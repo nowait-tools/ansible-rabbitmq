@@ -4,6 +4,12 @@ rabbitmq_manage: true
 rabbitmq_cluster: false
 make_rabbitmq_user: true
 
+# Package versions
+# !!! 'use_erlang_solutions_repo' should be set to true in order to specify erlang version !!!
+use_erlang_solutions_repo: false
+erlang_version: "1:18.1"
+rabbitmq_version: "3.6.0-1"
+
 # Cluster information
 # RabbitMQ (erlang.cookie)
 rabbitmq_cookie: XPVTRGPZHAQYKQHKEBUF
@@ -12,6 +18,8 @@ rabbitmq_hostname: "{{ ansible_hostname }}.ec2.internal"
 rabbitmq_nodename_suffix: .ec2.internal
 rabbitmq_ec2_tag_key: Name
 rabbitmq_ec2_tag_value: rabbitmq
+# Either 'all' or specific region, e.g. 'eu-central-1'
+rabbitmq_ec2_region: all
 # Must be set to true for clustering to work
 rabbitmq_use_longname: "false"
 

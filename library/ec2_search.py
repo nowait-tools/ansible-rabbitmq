@@ -6,7 +6,7 @@ DOCUMENTATION = '''
 module: ec2_search
 short_description: ask EC2 for information about other instances.
 description:
-    - Only supports seatch for hostname by tags currently. Looking to add more later.
+    - Only supports search for hostname by tags currently. Looking to add more later.
 version_added: "1.9"
 options:
   key:
@@ -17,7 +17,7 @@ options:
     aliases: []
   value:
     description:
-      - instance tag value in EC2
+      - instance tag value in EC2 (prefix)
     required: false
     default: null
     aliases: []
@@ -88,19 +88,17 @@ def get_all_ec2_regions(module):
         regions = boto.ec2.regions()
     except Exception, e:
         module.fail_json('Boto authentication issue: %s' % e)
-
     return regions
 
 # Connect to ec2 region
 def connect_to_region(region, module):
     try:
-        conn = boto.ec2.connect_to_region(region.name)
+        conn = boto.ec2.connect_to_region(region)
+        if conn == None:
+            raise Exception("Unable to get connection from boto")
+        return conn
     except Exception, e:
-        print module.jsonify('error connecting to region: ' + region.name)
-        conn = None
-    # connect_to_region will fail "silently" by returning
-    # None if the region name is wrong or not supported
-    return conn
+        module.fail_json(msg='error connecting to region %s: %s' % (region, e))
 
 def main():
     module = AnsibleModule(
@@ -109,30 +107,41 @@ def main():
             value = dict(),
             lookup = dict(default='tags'),
             ignore_state = dict(default='terminated'),
-            region = dict(),
+            region = dict(default='all'),
         )
     )
 
     if not HAS_BOTO:
         module.fail_json(msg='boto required for this module')
 
+    ec2_key = module.params.get('key')
+    ec2_value = module.params.get('value')
+
     server_info = list()
 
-    for region in get_all_ec2_regions(module):
+    all_regions = [r.name for r in get_all_ec2_regions(module)]
+    passed_region = module.params.get('region')
+
+    # Check if passed region is correct
+    if passed_region != 'all' and passed_region in all_regions:
+        regions = [passed_region]
+    else:
+        regions = all_regions
+
+    for region in regions:
         conn = connect_to_region(region, module)
         try:
             # Run when looking up by tag names, only returning hostname currently
             if module.params.get('lookup') == 'tags':
-                ec2_key = 'tag:' + module.params.get('key')
-                ec2_value = module.params.get('value')
-                reservations = conn.get_all_instances(filters={ec2_key : ec2_value})
-                for instance in [i for r in reservations for i in r.instances]:
-                    if instance.private_ip_address != None:
-                        instance.hostname = 'ip-' + instance.private_ip_address.replace('.', '-')
-                    if instance._state.name not in module.params.get('ignore_state'):
-                        server_info.append(todict(instance))
-        except:
-            print module.jsonify('error getting instances from: ' + region.name)
+                for instance in conn.get_only_instances():
+                    nameTag = instance.tags.get(ec2_key)
+                    if nameTag != None and nameTag.startswith(ec2_value):
+                        if instance.private_ip_address != None:
+                            instance.hostname = 'ip-' + instance.private_ip_address.replace('.', '-')
+                        if instance._state.name not in module.params.get('ignore_state'):
+                            server_info.append(todict(instance))
+        except Exception, e:
+            module.fail_json(msg='error getting instances from: %s %s' % (region, e))
 
     ec2_facts_result = dict(changed=True, info=server_info)
 
