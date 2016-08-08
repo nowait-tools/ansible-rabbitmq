@@ -13,7 +13,7 @@
 
 - name: add erlang repo (Ubuntu)
   apt_repository:
-    repo: "deb http://packages.erlang-solutions.com/ubuntu {{ ansible_distribution_release }} contrib"
+    repo: "deb https://packages.erlang-solutions.com/ubuntu {{ ansible_distribution_release }} contrib"
     state: present
     update_cache: yes
   when: ansible_distribution == 'Ubuntu' and use_erlang_solutions_repo
@@ -27,7 +27,7 @@
 
 - name: add rabbitmq key (Debian)
   apt_key:
-    url: http://www.rabbitmq.com/rabbitmq-signing-key-public.asc
+    url: https://www.rabbitmq.com/rabbitmq-release-signing-key.asc
     state: present
   when: ansible_os_family == 'Debian'
 
